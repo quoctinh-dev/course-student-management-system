@@ -29,7 +29,10 @@ build/
 ### VS Code ###
 .vscode/
 
-### Operating System Systems ###
+### Operating Systems ###
 .DS_Store
 Thumbs.db
 desktop.ini
+
+### App Configurations (Bảo mật thông tin) ###
+src/main/resources/application.yml
