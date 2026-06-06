@@ -41,3 +41,18 @@ CREATE TABLE enrollments(
     registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status status_enum NOT NULL DEFAULT 'WAITING'
 );
+
+INSERT INTO Admins(username, password) VALUES ('KIM TỎA','$2a$12$.mYALRIYxzh7VWtCnUY3pexxd1MhogDaD9ChcR3eLf2mvMdmV.i2e');
+SELECT * FROM admins;
+
+INSERT INTO Students (name, dob, email, sex, phone, password, created_at)
+VALUES (
+           'QUỐC TỊNH',
+           '2000-01-01',
+           'quoctinh@gmail.com',
+           TRUE,
+           '0987654321',
+           '$2a$12$.mYALRIYxzh7VWtCnUY3pexxd1MhogDaD9ChcR3eLf2mvMdmV.i2e',
+           NOW()
+       );
+SELECT * FROM students;

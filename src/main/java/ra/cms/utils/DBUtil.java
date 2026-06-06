@@ -15,7 +15,6 @@ public final class DBUtil {
     static {
         try {
             Class.forName("org.postgresql.Driver");
-            System.out.println("PostgreSQL Driver đã tải lên thành công!");
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Không tìm thấy PostgreSQL Driver!", e);
         }
