@@ -14,18 +14,16 @@ import java.util.Optional;
 public class StudentDAOImpl implements IStudentDao {
 
     @Override
-    public Optional<Student> findByEmail(String email) {
+    public Optional<Student> findByEmail(String email) throws DatabaseException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-
         String sql = "SELECT id, name, dob, email, sex, phone, password, created_at FROM Students WHERE email = ?";
 
         try {
             connection = DBUtil.getConnection();
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, email);
-
             resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {

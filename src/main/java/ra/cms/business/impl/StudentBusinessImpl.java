@@ -3,6 +3,7 @@ package ra.cms.business.impl;
 import ra.cms.business.IStudentBusiness;
 import ra.cms.dao.IStudentDao;
 import ra.cms.dao.impl.StudentDAOImpl;
+import ra.cms.exception.DatabaseException;
 import ra.cms.exception.ValidationException;
 import ra.cms.model.Student;
 import ra.cms.utils.BCryptUtil;
@@ -14,7 +15,7 @@ public class StudentBusinessImpl implements IStudentBusiness {
     private final IStudentDao studentDao = new StudentDAOImpl();
 
     @Override
-    public Optional<Student> login(String email, String password) {
+    public Optional<Student> login(String email, String password) throws ValidationException, DatabaseException {
         if (email == null || email.isBlank()) {
             throw new ValidationException("Email đăng nhập không được để trống hoặc chỉ chứa dấu cách!");
         }
