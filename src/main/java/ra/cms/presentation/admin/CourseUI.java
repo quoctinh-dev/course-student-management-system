@@ -62,7 +62,7 @@ public class CourseUI {
 
         System.out.print("Nhập thời lượng (giờ): ");
         int duration = inputInteger();
-        if (duration == -1) return; // Đứt luồng do nhập sai định dạng số
+        if (duration == -1) return;
 
         System.out.print("Nhập tên giảng viên phụ trách: ");
         String instructor = scanner.nextLine();

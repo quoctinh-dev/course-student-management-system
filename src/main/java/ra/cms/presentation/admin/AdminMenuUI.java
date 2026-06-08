@@ -2,7 +2,9 @@ package ra.cms.presentation.admin;
 
 import ra.cms.business.IAdminbusiness;
 import ra.cms.business.ICourseBusiness; // 1. Import Interface Course Business
+import ra.cms.business.IStudentBusiness;
 import ra.cms.business.impl.CourseBusinessImpl; // 2. Import lớp triển khai cụ thể
+import ra.cms.business.impl.StudentBusinessImpl;
 import ra.cms.model.Admin;
 
 import java.util.Scanner;
@@ -38,7 +40,8 @@ public class AdminMenuUI {
                     courseUI.showCourseManagementMenu();
                     break;
                 case "2":
-                    StudentUI studentUI = new StudentUI(adminBusiness, scanner);
+                    IStudentBusiness studentBusiness = new StudentBusinessImpl();
+                    StudentUI studentUI = new StudentUI(studentBusiness, scanner);
                     studentUI.showStudentManagementMenu();
                     break;
                 case "3":

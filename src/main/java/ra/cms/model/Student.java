@@ -6,12 +6,12 @@ import java.time.LocalDateTime;
 public class Student {
     private Long id;
     private String name;
-    private LocalDate dob; // Thay thế cho DATE
+    private LocalDate dob;
     private String email;
-    private boolean sex;   // true: Nam, false: Nữ (hoặc ngược lại)
+    private boolean sex;
     private String phone;
     private String password;
-    private LocalDateTime createdAt; // Thay thế cho TIMESTAMP
+    private LocalDateTime createdAt;
 
     // Constructors
     public Student() {
