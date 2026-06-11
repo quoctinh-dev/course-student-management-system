@@ -33,7 +33,7 @@ public class EnrollmentUI {
 
             String choice = scanner.nextLine();
             switch (choice) {
-                case "1": handleViewStudentsByCourse(); break;
+                case "1": handleViewStudentsByCourseWithPagination(); break;
                 case "2": handleApproveEnrollment(); break;
                 case "3": handleRemoveStudentFromCourse(); break;
                 case "4": inLoop = false; break;
@@ -41,7 +41,6 @@ public class EnrollmentUI {
             }
         }
     }
-
 
     private void handleViewStudentsByCourse() {
         System.out.println("\n============== DANH SÁCH SINH VIÊN ĐĂNG KÝ THEO KHÓA HỌC ==============");
@@ -89,6 +88,85 @@ public class EnrollmentUI {
         }
     }
 
+    private void handleViewStudentsByCourseWithPagination() {
+        System.out.println("\n============== DANH SÁCH SINH VIÊN ĐĂNG KÝ THEO KHÓA HỌC (PHÂN TRANG) ==============");
+        System.out.print("Nhập Mã số (ID) khóa học cần kiểm tra: ");
+        String input = scanner.nextLine().trim();
+
+        if (input.isEmpty()) {
+            System.out.println("[LỖI] Không được bỏ trống mã khóa học!");
+            return;
+        }
+
+        try {
+            Long courseId = Long.parseLong(input);
+
+            int currentPage = 1;
+            int pageSize = 5;
+            boolean viewing = true;
+
+            java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
+            while (viewing) {
+                int totalEnrollments = enrollmentBusiness.countByCourseId(courseId);
+                int totalPages = (int) Math.ceil((double) totalEnrollments / pageSize);
+                if (totalPages == 0) totalPages = 1;
+
+                List<Enrollment> pagedList = enrollmentBusiness.findByCourseIdWithPagination(courseId, currentPage, pageSize);
+
+                System.out.println("\n================ DANH SÁCH ĐƠN ĐĂNG KÝ - KHÓA HỌC #" + courseId + " (TRANG " + currentPage + "/" + totalPages + ") ================");
+
+                if (pagedList.isEmpty()) {
+                    System.out.println("[ℹ] Hiện tại chưa có sinh viên nào đăng ký khóa học này hoặc trang này không có dữ liệu.");
+                } else {
+                    System.out.println("+---------+------------+---------------------------+---------------------+--------------------+");
+                    System.out.printf("| %-7s | %-10s | %-25s | %-19s | %-18s |\n", "Mã Đơn", "ID Học Viên", "Tên Học Viên", "Ngày Đăng Ký", "Trạng Thái Đơn");
+                    System.out.println("+---------+------------+---------------------------+---------------------+--------------------+");
+
+                    for (Enrollment e : pagedList) {
+                        System.out.printf("| %-7d | %-10d | %-25s | %-19s | %-18s |\n",
+                                e.getId(),
+                                e.getStudent().getId(),
+                                e.getStudent().getName(),
+                                e.getRegisteredAt() != null ? e.getRegisteredAt().format(formatter) : "N/A",
+                                e.getStatus()
+                        );
+                    }
+                    System.out.println("+---------+------------+---------------------------+---------------------+--------------------+");
+                }
+
+                System.out.println("\n--- [ĐIỀU HƯỚNG PHÂN TRANG ĐƠN ĐĂNG KÝ] ---");
+                if (currentPage < totalPages) System.out.println("N. Trang tiếp theo (Next)");
+                if (currentPage > 1)         System.out.println("P. Trang trước đó (Previous)");
+                System.out.println("E. Thoát xem danh sách");
+                System.out.print("Nhập hành động (N/P/E): ");
+
+                String action = scanner.nextLine().trim().toUpperCase();
+                switch (action) {
+                    case "N":
+                        if (currentPage < totalPages) currentPage++;
+                        else System.out.println("[i] Đang ở trang đơn đăng ký cuối cùng!");
+                        break;
+                    case "P":
+                        if (currentPage > 1) currentPage--;
+                        else System.out.println("[i] Đang ở trang đơn đăng ký đầu tiên!");
+                        break;
+                    case "E":
+                        viewing = false;
+                        break;
+                    default:
+                        System.out.println("[x] Lệnh không hợp lệ! Chỉ chọn N, P hoặc E.");
+                }
+            }
+
+        } catch (NumberFormatException e) {
+            System.out.println("[LỖI] Mã ID khóa học bắt buộc phải là ký tự số nguyên dương!");
+        } catch (DatabaseException e) {
+            System.out.println("\n[LỖI HỆ THỐNG] Lỗi cơ sở dữ liệu: " + e.getMessage());
+        }
+        pressEnterToContinue();
+    }
+
     private void handleApproveEnrollment() {
         System.out.println("\n============== PHÊ DUYỆT ĐƠN ĐĂNG KÝ KHÓA HỌC ==============");
         System.out.print("Nhập Mã số đơn đăng ký (Mã Đơn) bạn muốn xử lý: ");
@@ -134,7 +212,6 @@ public class EnrollmentUI {
 
     private void handleRemoveStudentFromCourse() {
         System.out.println("\n============== XÓA SINH VIÊN KHỎI KHÓA HỌC ==============");
-        System.out.println("[ℹ] Mẹo: Admin nên chạy chức năng số 1 trước để lấy chính xác 'Mã Đơn' của sinh viên.");
         System.out.print("Nhập Mã số đơn đăng ký (Mã Đơn) muốn tiến hành xóa: ");
         String input = scanner.nextLine().trim();
 
@@ -163,5 +240,10 @@ public class EnrollmentUI {
         } catch (DatabaseException e) {
             System.out.println("\n[LỖI HỆ THỐNG] Gặp sự cố kết nối hoặc thực thi Database: " + e.getMessage());
         }
+    }
+
+    private void pressEnterToContinue() {
+        System.out.print("\n Bấm phím [Enter] để quay lại Menu...");
+        scanner.nextLine();
     }
 }

@@ -16,4 +16,8 @@ public interface ICourseBusiness {
     List<Course> searchCoursesByName(String keyword) throws ValidationException, BusinessException, DatabaseException;
     List<Course> getSortedCourses(int option) throws ValidationException, BusinessException, DatabaseException;
 
+    // NÂNG CAO PHÂN TRANG
+    List<Course> findWithPagination(int page, int size) throws DatabaseException;
+    int countAll() throws DatabaseException;
+
 }

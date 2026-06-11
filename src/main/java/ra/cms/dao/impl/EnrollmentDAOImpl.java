@@ -232,6 +232,88 @@ public class EnrollmentDAOImpl implements IEnrollmentDAO {
         return list;
     }
 
+    // PHÂN TRANG NÂNG CAO
+    @Override
+    public List<Enrollment> findByCourseIdWithPagination(Long courseId, int page, int size) throws DatabaseException {
+        List<Enrollment> list = new java.util.ArrayList<>();
+
+        int offset = (page - 1) * size;
+
+        String sql = "SELECT e.id, e.status, e.registered_at, " +
+                "s.id AS student_id, s.name AS student_name, s.email, s.phone " +
+                "FROM enrollments e " +
+                "JOIN students s ON e.student_id = s.id " +
+                "WHERE e.course_id = ? " +
+                "ORDER BY e.registered_at DESC " +
+                "LIMIT ? OFFSET ?";
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DBUtil.getConnection();
+            pstmt = conn.prepareStatement(sql);
+
+            pstmt.setLong(1, courseId);
+            pstmt.setInt(2, size);
+            pstmt.setInt(3, offset);
+
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Enrollment e = new Enrollment();
+                e.setId(rs.getLong("id"));
+
+                String statusStr = rs.getString("status");
+                if (statusStr != null) {
+                    e.setStatus(EnrollmentStatus.valueOf(statusStr));
+                }
+
+                Timestamp ts = rs.getTimestamp("registered_at");
+                if (ts != null) {
+                    e.setRegisteredAt(ts.toLocalDateTime());
+                }
+
+                Student s = new Student();
+                s.setId(rs.getLong("student_id"));
+                s.setName(rs.getString("student_name"));
+                s.setEmail(rs.getString("email"));
+                s.setPhone(rs.getString("phone"));
+                e.setStudent(s);
+
+                list.add(e);
+            }
+        } catch (SQLException ex) {
+            throw new DatabaseException("Lỗi hệ thống: Không thể tải danh sách sinh viên phân trang của khóa học #" + courseId, ex);
+        } finally {
+            DBUtil.closeResources(rs, pstmt, conn);
+        }
+        return list;
+    }
+
+    @Override
+    public int countByCourseId(Long courseId) throws DatabaseException {
+        String sql = "SELECT COUNT(id) AS total FROM enrollments WHERE course_id = ?";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            conn = DBUtil.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, courseId);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("total");
+            }
+        } catch (SQLException ex) {
+            throw new DatabaseException("Lỗi hệ thống: Không thể đếm tổng số lượng đơn đăng ký của khóa học #" + courseId, ex);
+        } finally {
+            DBUtil.closeResources(rs, pstmt, conn);
+        }
+        return 0;
+    }
+
     @Override
     public void updateStatus(Long enrollmentId, EnrollmentStatus status) throws DatabaseException {
         String sql = "UPDATE enrollments SET status = ?::status_enum WHERE id = ?";

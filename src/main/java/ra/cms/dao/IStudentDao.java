@@ -1,5 +1,6 @@
 package ra.cms.dao;
 
+import ra.cms.dto.CourseStatisticDTO;
 import ra.cms.exception.DatabaseException;
 import ra.cms.model.Student;
 
@@ -18,4 +19,14 @@ public interface IStudentDao {
     List<Student> search(String keyword) throws DatabaseException;
     List<Student> getSortedStudents(int option) throws DatabaseException;
     void updatePassword(Long studentId, String newPassword) throws DatabaseException;
+
+    // PHÂN TRANG NÂNG CAO
+    List<Student> findWithPaginationAndSort(int page, int size, int sortOption) throws DatabaseException;
+    int countAll() throws DatabaseException;
+    List<Student> searchWithPagination(String keyword, int page, int size) throws DatabaseException;
+    int countSearch(String keyword) throws DatabaseException;
+
+    // ĐỀ XUẤT KHÓA HỌC NÂNG CAO
+    List<CourseStatisticDTO> getRecommendedCoursesWithPagination(long studentId, int page, int size) throws DatabaseException;
+    int countTotalRecommendedCourses(long studentId) throws DatabaseException;
 }

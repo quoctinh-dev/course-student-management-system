@@ -14,4 +14,10 @@ public interface IStatisticBusiness {
     List<CourseStatisticDTO> getTop5HotCourses() throws DatabaseException;
 
     List<CourseStatisticDTO> getCrowdedCourses() throws DatabaseException;
+
+    // PHÂN TRANG NÂNG CAO
+    List<CourseStatisticDTO> getStudentCountByCourseWithPagination(int page, int size) throws DatabaseException;
+    int countTotalCoursesForStatistic() throws DatabaseException;
+    List<CourseStatisticDTO> getCrowdedCoursesWithPagination(int page, int size) throws DatabaseException;
+    int countCrowdedCoursesForStatistic() throws DatabaseException;
 }

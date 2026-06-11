@@ -19,4 +19,8 @@ public interface IEnrollmentBusiness {
     void approveEnrollment(Long enrollmentId, boolean isApproved) throws ValidationException, BusinessException, DatabaseException;
 
     void removeStudentFromCourse(Long enrollmentId) throws ValidationException, BusinessException, DatabaseException;
+
+    // PHÂN TRANG NÂNG CAO
+    List<Enrollment> findByCourseIdWithPagination(Long courseId, int page, int size) throws DatabaseException;
+    int countByCourseId(Long courseId) throws DatabaseException;
 }

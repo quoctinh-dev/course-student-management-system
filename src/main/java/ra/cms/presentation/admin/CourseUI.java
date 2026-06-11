@@ -33,7 +33,9 @@ public class CourseUI {
 
             String choice = scanner.nextLine().trim();
             switch (choice) {
-                case "1": handleDisplayAllCourses(); break;
+                case "1":handleDisplayAllCoursesWithPagination();
+                        pressEnterToContinue()
+                        ;break;
                 case "2": handleCreateCourse(); break;
                 case "3": handleUpdateCourse(); break;
                 case "4": handleDeleteCourse(); break;
@@ -45,6 +47,61 @@ public class CourseUI {
         }
     }
 
+
+    // NÂNG CAO PHÂN TRANG
+    private void handleDisplayAllCoursesWithPagination() {
+        int currentPage = 1;
+        int pageSize = 5;
+        boolean viewing = true;
+
+        while (viewing) {
+            try {
+                int totalCourses = courseBusiness.countAll();
+                int totalPages = (int) Math.ceil((double) totalCourses / pageSize);
+                if (totalPages == 0) totalPages = 1;
+
+                List<Course> pagedList = courseBusiness.findWithPagination(currentPage, pageSize);
+
+                System.out.println("\n================ DANH SÁCH KHÓA HỌC (TRANG " + currentPage + "/" + totalPages + ") ================");
+
+                if (pagedList.isEmpty()) {
+                    System.out.println("[ℹ] Không có dữ liệu ở trang này.");
+                } else {
+                    printCourseTable(pagedList);
+                }
+
+                System.out.println("\n--- [ĐIỀU HƯỚNG PHÂN TRANG] ---");
+                if (currentPage < totalPages)
+                    System.out.println("N. Trang tiếp theo (Next)");
+                if (currentPage > 1)
+                    System.out.println("P. Trang trước đó (Previous)");
+                System.out.println("E. Thoát xem danh sách");
+                System.out.print("Nhập hành động (N/P/E): ");
+
+                String action = scanner.nextLine().trim().toUpperCase();
+                switch (action) {
+                    case "N":
+                        if (currentPage < totalPages) currentPage++;
+                        else System.out.println("[i] Bạn đang ở trang cuối cùng!");
+                        break;
+                    case "P":
+                        if (currentPage > 1) currentPage--;
+                        else System.out.println("[i] Bạn đang ở trang đầu tiên!");
+                        break;
+                    case "E":
+                        viewing = false;
+                        break;
+                    default:
+                        System.out.println("[x] Lệnh không hợp lệ! Chỉ chọn N, P hoặc E.");
+                }
+
+            } catch (DatabaseException e) {
+                System.err.println("[LỖI HỆ THỐNG] " + e.getMessage());
+                viewing = false;
+            }
+        }
+    }
+
     private void handleDisplayAllCourses() {
         try {
             List<Course> list = courseBusiness.getAllCourses();
@@ -52,7 +109,7 @@ public class CourseUI {
         } catch (DatabaseException e) {
             System.err.println("[LỖI HỆ THỐNG] " + e.getMessage());
         }
-        pressEnterToContinue();
+
     }
 
     private void handleCreateCourse() {

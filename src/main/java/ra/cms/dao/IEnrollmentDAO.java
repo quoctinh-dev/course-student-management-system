@@ -21,5 +21,9 @@ public interface IEnrollmentDAO {
 
     void updateStatus(Long enrollmentId, EnrollmentStatus status) throws DatabaseException;
 
+    // PHÂN TRANG NÂNG CAO
+    List<Enrollment> findByCourseIdWithPagination(Long courseId, int page, int size) throws DatabaseException;
+    int countByCourseId(Long courseId) throws DatabaseException;
+
 
 }

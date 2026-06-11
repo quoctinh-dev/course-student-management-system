@@ -309,4 +309,67 @@ public class CourseDAOImpl implements ICourseDAO {
         }
         return courses;
     }
+
+    // NÂNG CAO PHÂN TRANG
+    @Override
+    public List<Course> findWithPagination(int page, int size) throws DatabaseException {
+        List<Course> courses = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        int offset = (page - 1) * size;
+
+        try {
+            connection = DBUtil.getConnection();
+            String sql = "SELECT id, name, duration, instructor, created_at FROM courses ORDER BY id ASC LIMIT ? OFFSET ?";
+            preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setInt(1, size);
+            preparedStatement.setInt(2, offset);
+
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Course course = new Course();
+                course.setId(resultSet.getLong("id"));
+                course.setName(resultSet.getString("name"));
+                course.setDuration(resultSet.getInt("duration"));
+                course.setInstructor(resultSet.getString("instructor"));
+
+                Timestamp timestamp = resultSet.getTimestamp("created_at");
+                if (timestamp != null) {
+                    course.setCreatedAt(timestamp.toLocalDateTime());
+                }
+
+                courses.add(course);
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Không thể truy cập lấy danh sách khóa học phân trang", e);
+        } finally {
+            DBUtil.closeResources(resultSet, preparedStatement, connection);
+        }
+        return courses;
+    }
+
+    @Override
+    public int countAll() throws DatabaseException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = DBUtil.getConnection();
+            String sql = "SELECT COUNT(id) AS total FROM courses";
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("total");
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Không thể đếm tổng số lượng khóa học", e);
+        } finally {
+            DBUtil.closeResources(resultSet, preparedStatement, connection);
+        }
+        return 0;
+    }
 }

@@ -134,4 +134,15 @@ public class CourseBusinessImpl implements ICourseBusiness {
 
         return sortedList;
     }
+
+    // NÂNG CAO PHÂN TRANG
+    @Override
+    public List<Course> findWithPagination(int page, int size) throws DatabaseException {
+        return courseDAO.findWithPagination(page, size);
+    }
+
+    @Override
+    public int countAll() throws DatabaseException {
+        return courseDAO.countAll();
+    }
 }

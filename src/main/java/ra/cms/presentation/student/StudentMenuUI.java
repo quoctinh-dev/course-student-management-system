@@ -3,6 +3,7 @@ package ra.cms.presentation.student;
 import ra.cms.business.ICourseBusiness;
 import ra.cms.business.IEnrollmentBusiness;
 import ra.cms.business.IStudentBusiness;
+import ra.cms.dto.CourseStatisticDTO;
 import ra.cms.exception.BusinessException;
 import ra.cms.exception.ValidationException;
 import ra.cms.exception.DatabaseException;
@@ -38,7 +39,8 @@ public class StudentMenuUI {
             System.out.println("3. Xem khóa học đã đăng ký");
             System.out.println("4. Hủy đăng ký (nếu chưa bắt đầu)");
             System.out.println("5. Đổi mật khẩu");
-            System.out.println("6. Đăng xuất");
+            System.out.println("6. Gợi ý khóa học cho bạn (vip)");
+            System.out.println("7. Đăng xuất");
             System.out.println("==================================");
             System.out.print("Nhập lựa chọn: ");
 
@@ -64,6 +66,10 @@ public class StudentMenuUI {
                     pressEnterToContinue();
                     break;
                 case "6":
+                    handleViewRecommendedCoursesWithPagination(student.getId());
+                    pressEnterToContinue();
+                    break;
+                case "7":
                     System.out.println("Đang đăng xuất tài khoản Học viên: " + student.getName() + "...");
                     studentLoggedIn = false;
                     break;
@@ -147,7 +153,7 @@ public class StudentMenuUI {
             String subChoice = scanner.nextLine().trim();
             switch (subChoice) {
                 case "1":
-                    viewAllCourses();
+                    handleDisplayAllCoursesWithPagination();
                     pressEnterToContinue();
                     break;
                 case "2":
@@ -171,6 +177,59 @@ public class StudentMenuUI {
             printCourseTable(list);
         } catch (DatabaseException e) {
             System.out.println("[LỖI HỆ THỐNG] Không thể tải danh sách khóa học từ server: " + e.getMessage()); // Đổi sang System.out
+        }
+    }
+    // PHÂN TRANG NÂNG CAO
+    private void handleDisplayAllCoursesWithPagination() {
+        int currentPage = 1;
+        int pageSize = 5;
+        boolean viewing = true;
+
+        while (viewing) {
+            try {
+                int totalCourses = courseBusiness.countAll();
+                int totalPages = (int) Math.ceil((double) totalCourses / pageSize);
+                if (totalPages == 0) totalPages = 1;
+
+                List<Course> pagedList = courseBusiness.findWithPagination(currentPage, pageSize);
+
+                System.out.println("\n================ DANH SÁCH KHÓA HỌC (TRANG " + currentPage + "/" + totalPages + ") ================");
+
+                if (pagedList.isEmpty()) {
+                    System.out.println("[ℹ] Không có dữ liệu ở trang này.");
+                } else {
+                    printCourseTable(pagedList);
+                }
+
+                System.out.println("\n--- [ĐIỀU HƯỚNG PHÂN TRANG] ---");
+                if (currentPage < totalPages)
+                    System.out.println("N. Trang tiếp theo (Next)");
+                if (currentPage > 1)
+                    System.out.println("P. Trang trước đó (Previous)");
+                System.out.println("E. Thoát xem danh sách");
+                System.out.print("Nhập hành động (N/P/E): ");
+
+                String action = scanner.nextLine().trim().toUpperCase();
+                switch (action) {
+                    case "N":
+                        if (currentPage < totalPages) currentPage++;
+                        else System.out.println("[i] Bạn đang ở trang cuối cùng!");
+                        break;
+                    case "P":
+                        if (currentPage > 1) currentPage--;
+                        else System.out.println("[i] Bạn đang ở trang đầu tiên!");
+                        break;
+                    case "E":
+                        viewing = false;
+                        break;
+                    default:
+                        System.out.println("[x] Lệnh không hợp lệ! Chỉ chọn N, P hoặc E.");
+                }
+
+            } catch (DatabaseException e) {
+                System.err.println("[LỖI HỆ THỐNG] " + e.getMessage());
+                viewing = false;
+            }
         }
     }
 
@@ -273,6 +332,68 @@ public class StudentMenuUI {
 
         } catch (DatabaseException e) {
             System.out.println("[LỖI HỆ THỐNG] Không thể truy xuất dữ liệu từ máy chủ: " + e.getMessage()); // Đổi sang System.out
+        }
+    }
+
+    // ĐỀ XUẤT KHÓA HỌC NÂNG CAO
+    private void handleViewRecommendedCoursesWithPagination(long studentId) {
+        int currentPage = 1;
+        int pageSize = 3;
+        boolean viewing = true;
+
+        while (viewing) {
+            try {
+                int totalRecommendations = studentBusiness.countTotalRecommendedCourses(studentId); // Thay đổi biến business cho đúng lớp của bạn
+                int totalPages = (int) Math.ceil((double) totalRecommendations / pageSize);
+                if (totalPages == 0) totalPages = 1;
+
+                List<CourseStatisticDTO> recommendations = studentBusiness.getRecommendedCoursesWithPagination(studentId, currentPage, pageSize);
+
+                System.out.println("\n [GỢI Ý KHÓA HỌC PHÙ HỢP VỚI BẠN - TRANG " + currentPage + "/" + totalPages + "]");
+                if (recommendations.isEmpty()) {
+                    System.out.println("[ℹ] Hiện tại hệ thống chưa có đủ dữ liệu hành vi để đưa ra đề xuất cho bạn.");
+                    break;
+                }
+
+                System.out.println("+------------+----------------------------------------------------+------------------------+");
+                System.out.printf("| %-10s | %-50s | %-22s |\n", "Mã Gợi Ý", "Tên Khóa Học Đề Xuất", "Số Bạn Học Đã Chọn");
+                System.out.println("+------------+----------------------------------------------------+------------------------+");
+
+                for (CourseStatisticDTO dto : recommendations) {
+                    System.out.printf("| %-10d | %-50s | %-22d |\n",
+                            dto.getCourseId(),
+                            dto.getCourseName(),
+                            dto.getStudentCount()
+                    );
+                }
+                System.out.println("+------------+----------------------------------------------------+------------------------+");
+
+                System.out.println("\n--- [ĐIỀU HƯỚNG XEM GỢI Ý] ---");
+                if (currentPage < totalPages) System.out.println("N. Gợi ý tiếp theo (Next)");
+                if (currentPage > 1)         System.out.println("P. Gợi ý trước đó (Previous)");
+                System.out.println("E. Thoát giao diện gợi ý");
+                System.out.print("Nhập hành động (N/P/E): ");
+
+                String action = scanner.nextLine().trim().toUpperCase();
+                switch (action) {
+                    case "N":
+                        if (currentPage < totalPages) currentPage++;
+                        else System.out.println("[i] Đang ở trang gợi ý cuối cùng!");
+                        break;
+                    case "P":
+                        if (currentPage > 1) currentPage--;
+                        else System.out.println("[i] Đang ở trang gợi ý đầu tiên!");
+                        break;
+                    case "E":
+                        viewing = false;
+                        break;
+                    default:
+                        System.out.println("[X] Lệnh không hợp lệ! Chỉ chọn N, P hoặc E.");
+                }
+            } catch (DatabaseException e) {
+                System.out.println("\n[LỖI HỆ THỐNG] Không thể tải dữ liệu đề xuất: " + e.getMessage());
+                viewing = false;
+            }
         }
     }
 

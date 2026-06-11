@@ -16,4 +16,8 @@ public interface ICourseDAO {
     void deleteById(Long id) throws DatabaseException;
     List<Course> findByNameContaining(String keyword) throws DatabaseException;
     List<Course> findAllSorted(String sortField, String direction) throws DatabaseException;
+
+    // NÂNG CAO PHÂN TRANG
+    List<Course> findWithPagination(int page, int size) throws DatabaseException;
+    int countAll() throws DatabaseException;
 }

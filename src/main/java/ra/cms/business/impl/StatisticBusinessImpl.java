@@ -32,4 +32,25 @@ public class StatisticBusinessImpl implements IStatisticBusiness {
     public List<CourseStatisticDTO> getCrowdedCourses() throws DatabaseException {
         return statisticDAO.getCrowdedCourses();
     }
+
+    // PHÂN TRANG NÂNG CAO
+    @Override
+    public List<CourseStatisticDTO> getStudentCountByCourseWithPagination(int page, int size) throws DatabaseException {
+        return statisticDAO.getStudentCountByCourseWithPagination(page, size);
+    }
+
+    @Override
+    public int countTotalCoursesForStatistic() throws DatabaseException {
+        return statisticDAO.countTotalCoursesForStatistic();
+    }
+
+    @Override
+    public List<CourseStatisticDTO> getCrowdedCoursesWithPagination(int page, int size) throws DatabaseException {
+        return statisticDAO.getCrowdedCoursesWithPagination(page, size);
+    }
+
+    @Override
+    public int countCrowdedCoursesForStatistic() throws DatabaseException {
+        return statisticDAO.countCrowdedCoursesForStatistic();
+    }
 }

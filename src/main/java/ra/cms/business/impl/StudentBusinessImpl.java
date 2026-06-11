@@ -3,6 +3,7 @@ package ra.cms.business.impl;
 import ra.cms.business.IStudentBusiness;
 import ra.cms.dao.IStudentDao;
 import ra.cms.dao.impl.StudentDAOImpl;
+import ra.cms.dto.CourseStatisticDTO;
 import ra.cms.exception.BusinessException;
 import ra.cms.exception.DatabaseException;
 import ra.cms.exception.ValidationException;
@@ -189,5 +190,37 @@ public class StudentBusinessImpl implements IStudentBusiness {
         studentDao.updatePassword(currentStudent.getId(), hashedNewPassword);
         currentStudent.setPassword(hashedNewPassword);
 
+    }
+
+    // PHÂN TRANG NÂNG CAO
+    @Override
+    public List<Student> findWithPaginationAndSort(int page, int size, int sortOption) throws DatabaseException {
+        return studentDao.findWithPaginationAndSort(page, size, sortOption);
+    }
+
+    @Override
+    public int countAll() throws DatabaseException {
+        return studentDao.countAll();
+    }
+
+    @Override
+    public List<Student> searchWithPagination(String keyword, int page, int size) throws DatabaseException {
+        return studentDao.searchWithPagination(keyword, page, size);
+    }
+
+    @Override
+    public int countSearch(String keyword) throws DatabaseException {
+        return studentDao.countSearch(keyword);
+    }
+
+    // ĐỀ XUẤT KHÓA HỌC NÂNG CAO
+    @Override
+    public List<CourseStatisticDTO> getRecommendedCoursesWithPagination(long studentId, int page, int size) throws DatabaseException {
+        return studentDao.getRecommendedCoursesWithPagination(studentId, page, size);
+    }
+
+    @Override
+    public int countTotalRecommendedCourses(long studentId) throws DatabaseException {
+        return studentDao.countTotalRecommendedCourses(studentId);
     }
 }

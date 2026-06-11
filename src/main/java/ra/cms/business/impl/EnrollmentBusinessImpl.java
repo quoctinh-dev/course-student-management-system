@@ -89,6 +89,17 @@ public class EnrollmentBusinessImpl implements IEnrollmentBusiness {
         return enrollmentDAO.findByCourseId(courseId);
     }
 
+    // PHÂN TRANG NÂNG CAO
+    @Override
+    public List<Enrollment> findByCourseIdWithPagination(Long courseId, int page, int size) throws DatabaseException {
+        return enrollmentDAO.findByCourseIdWithPagination(courseId, page, size);
+    }
+
+    @Override
+    public int countByCourseId(Long courseId) throws DatabaseException {
+        return enrollmentDAO.countByCourseId(courseId);
+    }
+
     @Override
     public void approveEnrollment(Long enrollmentId, boolean isApproved) throws ValidationException, BusinessException, DatabaseException {
         if (enrollmentId == null || enrollmentId <= 0) {

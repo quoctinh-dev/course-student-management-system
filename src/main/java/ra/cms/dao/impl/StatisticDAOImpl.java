@@ -160,4 +160,117 @@ public class StatisticDAOImpl implements IStatisticDAO {
         return list;
     }
 
+    // PHÂN TRANG NÂNG CAO
+    @Override
+    public List<CourseStatisticDTO> getStudentCountByCourseWithPagination(int page, int size) throws DatabaseException {
+        List<CourseStatisticDTO> list = new ArrayList<>();
+        String sql = "SELECT c.id, c.name, COUNT(CASE WHEN e.status = 'CONFIRM' THEN 1 END) AS student_count " +
+                "FROM courses c " +
+                "LEFT JOIN enrollments e ON c.id = e.course_id " +
+                "GROUP BY c.id, c.name " +
+                "ORDER BY c.name ASC " +
+                "LIMIT ? OFFSET ?";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            conn = DBUtil.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            int offset = (page - 1) * size;
+            pstmt.setInt(1, size);
+            pstmt.setInt(2, offset);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                CourseStatisticDTO dto = new CourseStatisticDTO();
+                dto.setCourseId(rs.getLong("id"));
+                dto.setCourseName(rs.getString("name"));
+                dto.setStudentCount(rs.getInt("student_count"));
+                list.add(dto);
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Lỗi hệ thống: Không thể phân trang số lượng học viên theo từng khóa!", e);
+        } finally {
+            DBUtil.closeResources(rs, pstmt, conn);
+        }
+        return list;
+    }
+
+    @Override
+    public int countTotalCoursesForStatistic() throws DatabaseException {
+        String sql = "SELECT COUNT(id) AS total FROM courses";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            conn = DBUtil.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+            if (rs.next()) return rs.getInt("total");
+        } catch (SQLException e) {
+            throw new DatabaseException("Lỗi hệ thống: Không thể đếm tổng số lượng khóa học để phân trang!", e);
+        } finally {
+            DBUtil.closeResources(rs, pstmt, conn);
+        }
+        return 0;
+    }
+
+    @Override
+    public List<CourseStatisticDTO> getCrowdedCoursesWithPagination(int page, int size) throws DatabaseException {
+        List<CourseStatisticDTO> list = new ArrayList<>();
+        String sql = "SELECT c.id, c.name, COUNT(CASE WHEN e.status = 'CONFIRM' THEN 1 END) AS student_count " +
+                "FROM courses c " +
+                "LEFT JOIN enrollments e ON c.id = e.course_id " +
+                "GROUP BY c.id, c.name " +
+                "HAVING COUNT(CASE WHEN e.status = 'CONFIRM' THEN 1 END) > 10 " +
+                "ORDER BY student_count DESC " +
+                "LIMIT ? OFFSET ?";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            conn = DBUtil.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            int offset = (page - 1) * size;
+            pstmt.setInt(1, size);
+            pstmt.setInt(2, offset);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                CourseStatisticDTO dto = new CourseStatisticDTO();
+                dto.setCourseId(rs.getLong("id"));
+                dto.setCourseName(rs.getString("name"));
+                dto.setStudentCount(rs.getInt("student_count"));
+                list.add(dto);
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Lỗi hệ thống: Không thể phân trang danh sách khóa học trên 10 học viên!", e);
+        } finally {
+            DBUtil.closeResources(rs, pstmt, conn);
+        }
+        return list;
+    }
+
+    @Override
+    public int countCrowdedCoursesForStatistic() throws DatabaseException {
+        String sql = "SELECT COUNT(*) AS total FROM (" +
+                "SELECT c.id FROM courses c " +
+                "LEFT JOIN enrollments e ON c.id = e.course_id " +
+                "GROUP BY c.id " +
+                "HAVING COUNT(CASE WHEN e.status = 'CONFIRM' THEN 1 END) > 10" +
+                ") AS temp_table";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            conn = DBUtil.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+            if (rs.next()) return rs.getInt("total");
+        } catch (SQLException e) {
+            throw new DatabaseException("Lỗi hệ thống: Không thể đếm tổng số lượng khóa học đông học viên để phân trang!", e);
+        } finally {
+            DBUtil.closeResources(rs, pstmt, conn);
+        }
+        return 0;
+    }
+
 }
