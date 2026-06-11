@@ -234,7 +234,7 @@ public class EnrollmentDAOImpl implements IEnrollmentDAO {
 
     @Override
     public void updateStatus(Long enrollmentId, EnrollmentStatus status) throws DatabaseException {
-        String sql = "UPDATE enrollments SET status = ? WHERE id = ?";
+        String sql = "UPDATE enrollments SET status = ?::status_enum WHERE id = ?";
 
         Connection conn = null;
         PreparedStatement pstmt = null;

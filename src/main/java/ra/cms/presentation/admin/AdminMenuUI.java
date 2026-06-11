@@ -1,11 +1,9 @@
 package ra.cms.presentation.admin;
 
-import ra.cms.business.IAdminbusiness;
-import ra.cms.business.ICourseBusiness; // 1. Import Interface Course Business
-import ra.cms.business.IEnrollmentBusiness;
-import ra.cms.business.IStudentBusiness;
+import ra.cms.business.*;
 import ra.cms.business.impl.CourseBusinessImpl; // 2. Import lớp triển khai cụ thể
 import ra.cms.business.impl.EnrollmentBusinessImpl;
+import ra.cms.business.impl.StatisticBusinessImpl;
 import ra.cms.business.impl.StudentBusinessImpl;
 import ra.cms.model.Admin;
 
@@ -52,7 +50,8 @@ public class AdminMenuUI {
                     enrollmentUI.showEnrollmentManagementMenu();
                     break;
                 case "4":
-                    StatisticsUI statisticsUI = new StatisticsUI(adminBusiness, scanner);
+                    IStatisticBusiness statisticBusiness = new StatisticBusinessImpl();
+                    StatisticsUI statisticsUI = new StatisticsUI(statisticBusiness, scanner);
                     statisticsUI.showStatisticsMenu();
                     break;
                 case "5":
