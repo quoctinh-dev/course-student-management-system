@@ -22,9 +22,9 @@ public class AdminLoginUI {
         try {
             System.out.println("\n--- ĐĂNG NHẬP QUẢN TRỊ VIÊN ---");
             System.out.print("Nhập username: ");
-            String username = scanner.nextLine();
+            String username = scanner.nextLine().trim();
             System.out.print("Nhập password: ");
-            String password = scanner.nextLine();
+            String password = scanner.nextLine().trim();
 
             System.out.println("Đang xác thực thông tin...");
             Optional<Admin> adminOpt = adminBusiness.login(username, password);

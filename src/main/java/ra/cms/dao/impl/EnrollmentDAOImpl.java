@@ -8,10 +8,7 @@ import ra.cms.model.EnrollmentStatus;
 import ra.cms.model.Student;
 import ra.cms.utils.DBUtil;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -179,6 +176,78 @@ public class EnrollmentDAOImpl implements IEnrollmentDAO {
 
         } catch (SQLException ex) {
             throw new DatabaseException("Lỗi hệ thống: Không thể xóa đơn đăng ký số #" + enrollmentId, ex);
+        } finally {
+            DBUtil.closeResources(null, pstmt, conn);
+        }
+    }
+
+    @Override
+    public List<Enrollment> findByCourseId(Long courseId) throws DatabaseException {
+        List<Enrollment> list = new java.util.ArrayList<>();
+        String sql = "SELECT e.id, e.status, e.registered_at, " +
+                "s.id AS student_id, s.name AS student_name, s.email, s.phone " +
+                "FROM enrollments e " +
+                "JOIN students s ON e.student_id = s.id " +
+                "WHERE e.course_id = ? " +
+                "ORDER BY e.registered_at DESC";
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DBUtil.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, courseId);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Enrollment e = new Enrollment();
+                e.setId(rs.getLong("id"));
+
+                String statusStr = rs.getString("status");
+                if (statusStr != null) {
+                    e.setStatus(EnrollmentStatus.valueOf(statusStr));
+                }
+
+                Timestamp ts = rs.getTimestamp("registered_at");
+                if (ts != null) {
+                    e.setRegisteredAt(ts.toLocalDateTime());
+                }
+
+                Student s = new Student();
+                s.setId(rs.getLong("student_id"));
+                s.setName(rs.getString("student_name"));
+                s.setEmail(rs.getString("email"));
+                s.setPhone(rs.getString("phone"));
+                e.setStudent(s);
+
+                list.add(e);
+            }
+        } catch (SQLException ex) {
+            throw new DatabaseException("Lỗi hệ thống: Không thể tải danh sách sinh viên của khóa học #" + courseId, ex);
+        } finally {
+            DBUtil.closeResources(rs, pstmt, conn);
+        }
+        return list;
+    }
+
+    @Override
+    public void updateStatus(Long enrollmentId, EnrollmentStatus status) throws DatabaseException {
+        String sql = "UPDATE enrollments SET status = ? WHERE id = ?";
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            conn = DBUtil.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, status.name());
+            pstmt.setLong(2, enrollmentId);
+
+            pstmt.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DatabaseException("Lỗi hệ thống: Không thể cập nhật trạng thái đơn đăng ký #" + enrollmentId, ex);
         } finally {
             DBUtil.closeResources(null, pstmt, conn);
         }

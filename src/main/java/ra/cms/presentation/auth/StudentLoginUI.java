@@ -26,9 +26,9 @@ public class StudentLoginUI {
         try {
             System.out.println("\n--- ĐĂNG NHẬP HỌC VIÊN ---");
             System.out.print("Nhập email học viên: ");
-            String email = scanner.nextLine();
+            String email = scanner.nextLine().trim();
             System.out.print("Nhập mật khẩu: ");
-            String password = scanner.nextLine();
+            String password = scanner.nextLine().trim();
 
             System.out.println("Đang kết nối xác thực tài khoản Học viên...");
             Optional<Student> studentOpt = studentBusiness.login(email, password);

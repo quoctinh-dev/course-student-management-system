@@ -13,4 +13,10 @@ public interface IEnrollmentBusiness {
     List<Enrollment> getHistoryByStudent(Long studentId, int sortOption) throws DatabaseException;
 
     void cancelEnrollment(Long studentId, Long enrollmentId) throws ValidationException, BusinessException, DatabaseException;
+
+    List<Enrollment> getEnrollmentsByCourse(Long courseId) throws ValidationException, BusinessException, DatabaseException;
+
+    void approveEnrollment(Long enrollmentId, boolean isApproved) throws ValidationException, BusinessException, DatabaseException;
+
+    void removeStudentFromCourse(Long enrollmentId) throws ValidationException, BusinessException, DatabaseException;
 }

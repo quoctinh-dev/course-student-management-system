@@ -69,8 +69,60 @@ public class EnrollmentBusinessImpl implements IEnrollmentBusiness {
                     "' đã được xử lý ở trạng thái [" + enrollment.getStatus() + "], không thể tự ý hủy!");
         }
 
-        enrollmentDAO.deleteById(enrollmentId);
+        enrollmentDAO.
+                deleteById(enrollmentId);
 
+    }
+
+    @Override
+    public List<Enrollment> getEnrollmentsByCourse(Long courseId) throws ValidationException, BusinessException, DatabaseException {
+
+        if (courseId == null || courseId <= 0) {
+            throw new ValidationException("Mã khóa học cung cấp không hợp lệ!");
+        }
+
+
+        if (courseDAO.findById(courseId).isEmpty()) {
+            throw new BusinessException("Xem danh sách thất bại: Không tìm thấy khóa học nào mang mã số #" + courseId);
+        }
+
+        return enrollmentDAO.findByCourseId(courseId);
+    }
+
+    @Override
+    public void approveEnrollment(Long enrollmentId, boolean isApproved) throws ValidationException, BusinessException, DatabaseException {
+        if (enrollmentId == null || enrollmentId <= 0) {
+            throw new ValidationException("Mã đơn đăng ký cần duyệt không hợp lệ!");
+        }
+
+        Optional<Enrollment> enrollOpt = enrollmentDAO.findById(enrollmentId);
+        if (enrollOpt.isEmpty()) {
+            throw new BusinessException("Xử lý thất bại: Không tìm thấy đơn đăng ký nào mang mã số #" + enrollmentId);
+        }
+
+        Enrollment enrollment = enrollOpt.get();
+
+        if (enrollment.getStatus() != EnrollmentStatus.WAITING) {
+            throw new BusinessException("Thao tác bị chặn: Đơn đăng ký này đã được xử lý trước đó với trạng thái [" + enrollment.getStatus() + "]. Không thể duyệt lại!");
+        }
+
+        EnrollmentStatus newStatus = isApproved ? EnrollmentStatus.CONFIRM : EnrollmentStatus.DENIED;
+
+        enrollmentDAO.updateStatus(enrollmentId, newStatus);
+    }
+
+    @Override
+    public void removeStudentFromCourse(Long enrollmentId) throws ValidationException, BusinessException, DatabaseException {
+        if (enrollmentId == null || enrollmentId <= 0) {
+            throw new ValidationException("Mã đơn đăng ký cần xóa không hợp lệ!");
+        }
+
+        Optional<Enrollment> enrollOpt = enrollmentDAO.findById(enrollmentId);
+        if (enrollOpt.isEmpty()) {
+            throw new BusinessException("Xóa thất bại: Không tìm thấy lịch sử đăng ký học nào mang mã số #" + enrollmentId);
+        }
+
+        enrollmentDAO.deleteById(enrollmentId);
     }
 
 }
