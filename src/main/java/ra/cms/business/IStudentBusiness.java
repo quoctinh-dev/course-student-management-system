@@ -17,5 +17,6 @@ public interface IStudentBusiness {
     void deleteStudent(Long id) throws ValidationException, BusinessException, DatabaseException;
     List<Student> searchStudents(String keyword) throws ValidationException, DatabaseException;
     List<Student> getSortedStudents(int option) throws ValidationException, DatabaseException;
+    void changePassword(Student currentStudent, String oldPassword, String verificationInput, String newPassword, String confirmPassword) throws ValidationException, BusinessException,DatabaseException;
 }
 

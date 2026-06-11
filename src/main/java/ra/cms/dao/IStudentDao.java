@@ -17,4 +17,5 @@ public interface IStudentDao {
     void delete(Long id) throws DatabaseException;
     List<Student> search(String keyword) throws DatabaseException;
     List<Student> getSortedStudents(int option) throws DatabaseException;
+    void updatePassword(Long studentId, String newPassword) throws DatabaseException;
 }

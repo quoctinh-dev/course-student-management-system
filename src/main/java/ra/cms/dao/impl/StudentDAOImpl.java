@@ -319,4 +319,25 @@ public class StudentDAOImpl implements IStudentDao {
         }
         return students;
     }
+
+    @Override
+    public void updatePassword(Long studentId, String newPassword) throws DatabaseException {
+        String sql = "UPDATE students SET password = ? WHERE id = ?";
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            conn = DBUtil.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, newPassword);
+            pstmt.setLong(2, studentId);
+
+            pstmt.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DatabaseException("Lỗi hệ thống: Không thể cập nhật mật khẩu mới cho học viên!", ex);
+        } finally {
+            DBUtil.closeResources(null, pstmt, conn);
+        }
+    }
 }

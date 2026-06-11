@@ -152,4 +152,42 @@ public class StudentBusinessImpl implements IStudentBusiness {
         }
         return studentDao.getSortedStudents(option);
     }
+
+    @Override
+    public void changePassword(Student currentStudent, String oldPassword, String verificationInput, String newPassword, String confirmPassword)
+            throws ValidationException, BusinessException, DatabaseException {
+
+        if (oldPassword.isEmpty() || verificationInput.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()) {
+            throw new ValidationException("Không được để trống bất kỳ ô nhập liệu nào!");
+        }
+
+        if (!BCryptUtil.verify(oldPassword, currentStudent.getPassword())) {
+            throw new BusinessException("Mật khẩu cũ nhập vào không chính xác!");
+        }
+
+        boolean isEmailMatch = verificationInput.equalsIgnoreCase(currentStudent.getEmail());
+        boolean isPhoneMatch = currentStudent.getPhone() != null && verificationInput.equals(currentStudent.getPhone());
+
+        if (!isEmailMatch && !isPhoneMatch) {
+            throw new BusinessException("Thông tin xác thực (Email/SĐT) không trùng khớp với tài khoản này!");
+        }
+
+        if (newPassword.length() < 6) {
+            throw new ValidationException("Mật khẩu mới phải có độ dài từ 6 ký tự trở lên!");
+        }
+
+        if (BCryptUtil.verify(newPassword, currentStudent.getPassword())) {
+            throw new BusinessException("Mật khẩu mới không được trùng với mật khẩu cũ đang dùng!");
+        }
+
+        if (!newPassword.equals(confirmPassword)) {
+            throw new ValidationException("Xác nhận mật khẩu mới không trùng khớp!");
+        }
+
+        String hashedNewPassword = BCryptUtil.hash(newPassword);
+
+        studentDao.updatePassword(currentStudent.getId(), hashedNewPassword);
+        currentStudent.setPassword(hashedNewPassword);
+
+    }
 }

@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 
 public class Enrollment {
     private Long id;
-    private Student student; // Khóa ngoại liên kết tới Object Student
-    private Course course;   // Khóa ngoại liên kết tới Object Course
+    private Student student;
+    private Course course;
     private LocalDateTime registeredAt;
     private EnrollmentStatus status;
 

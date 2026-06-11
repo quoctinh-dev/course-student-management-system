@@ -1,6 +1,10 @@
 package ra.cms.presentation.auth;
 
+import ra.cms.business.ICourseBusiness;
+import ra.cms.business.IEnrollmentBusiness;
 import ra.cms.business.IStudentBusiness;
+import ra.cms.business.impl.CourseBusinessImpl;
+import ra.cms.business.impl.EnrollmentBusinessImpl;
 import ra.cms.exception.DatabaseException;
 import ra.cms.exception.ValidationException;
 import ra.cms.model.Student;
@@ -33,7 +37,10 @@ public class StudentLoginUI {
                 Student student = studentOpt.get();
                 System.out.println("Đăng nhập thành công! Chào mừng Học viên: " + student.getName());
 
-                StudentMenuUI studentMenuUI = new StudentMenuUI(studentBusiness, scanner, student);
+                ICourseBusiness courseBusiness = new CourseBusinessImpl();
+                IEnrollmentBusiness enrollmentBusiness = new EnrollmentBusinessImpl();
+
+                StudentMenuUI studentMenuUI = new StudentMenuUI(studentBusiness, enrollmentBusiness, courseBusiness, scanner, student);
                 studentMenuUI.showStudentMenu();
             } else {
                 System.err.println("Đăng nhập thất bại: Sai tài khoản email hoặc mật khẩu Học viên!");

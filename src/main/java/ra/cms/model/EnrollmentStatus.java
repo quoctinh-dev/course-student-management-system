@@ -1,8 +1,8 @@
-package ra.cms.model;
+    package ra.cms.model;
 
-public enum EnrollmentStatus {
-    WAITING,
-    DENIED,
-    CANCELED,
-    CONFIRM
-}
+    public enum EnrollmentStatus {
+        WAITING,
+        DENIED,
+        CANCELED,
+        CONFIRM
+    }
