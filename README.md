@@ -1,41 +1,38 @@
-# 🎓 Hệ thống Quản lý Học viên và Khóa học
+# 🎓 Course & Student Management System
 
-Hệ thống Quản lý Học viên và Khóa học được xây dựng bằng Java Core và PostgreSQL, mô phỏng hoạt động quản lý tại một trung tâm đào tạo.
+Hệ thống Quản lý Học viên và Khóa học được xây dựng bằng **Java Core** và **PostgreSQL**, mô phỏng hoạt động quản lý tại một trung tâm đào tạo.
 
-Dự án cho phép quản trị viên quản lý học viên, khóa học, đăng ký học tập và thống kê dữ liệu. Đồng thời học viên có thể tra cứu khóa học, đăng ký học, theo dõi lịch sử đăng ký và nhận gợi ý khóa học phù hợp.
+Dự án hỗ trợ quản trị viên quản lý học viên, khóa học, đăng ký học tập và thống kê dữ liệu. Đồng thời học viên có thể tra cứu khóa học, đăng ký học, theo dõi trạng thái đăng ký và nhận gợi ý khóa học phù hợp.
 
 ---
 
-## 🎯 Mục tiêu dự án
+## 📌 Tổng quan dự án
 
-Dự án được thực hiện nhằm:
+Mục tiêu của dự án là áp dụng các kiến thức về:
 
-* Thực hành lập trình hướng đối tượng (OOP)
-* Làm việc với cơ sở dữ liệu PostgreSQL thông qua JDBC
-* Áp dụng kiến trúc phân tầng trong ứng dụng Java
-* Xây dựng và xử lý các nghiệp vụ quản lý học viên
-* Thực hành kiểm thử và cải thiện chất lượng phần mềm
+* Lập trình hướng đối tượng (OOP)
+* JDBC và PostgreSQL
+* Thiết kế ứng dụng theo kiến trúc phân tầng
+* Xử lý ngoại lệ và kiểm tra dữ liệu đầu vào
+* Quản lý nghiệp vụ thực tế trong hệ thống đào tạo
+* Kiểm thử và cải thiện chất lượng phần mềm
+
+Dự án được phát triển theo mô hình Console Application nhằm tập trung vào thiết kế hệ thống, xử lý nghiệp vụ và làm việc với cơ sở dữ liệu.
 
 ---
 
 ## 🛠 Công nghệ sử dụng
 
-### Ngôn ngữ và Cơ sở dữ liệu
-
-* Java 17
-* PostgreSQL
-
-### Thư viện
-
-* PostgreSQL JDBC Driver
-* BCrypt (Mã hóa mật khẩu)
-
-### Công cụ phát triển
-
-* IntelliJ IDEA
-* Maven
-* pgAdmin 4
-* Git & GitHub
+| Thành phần      | Công nghệ     |
+| --------------- | ------------- |
+| Ngôn ngữ        | Java 17       |
+| Cơ sở dữ liệu   | PostgreSQL    |
+| Kết nối dữ liệu | JDBC          |
+| Mã hóa mật khẩu | BCrypt        |
+| Build Tool      | Maven         |
+| IDE             | IntelliJ IDEA |
+| Database Tool   | pgAdmin 4     |
+| Version Control | Git & GitHub  |
 
 ---
 
@@ -53,7 +50,7 @@ DAO Layer
 PostgreSQL Database
 ```
 
-### Cấu trúc chính
+### Cấu trúc thư mục
 
 ```text
 src/
@@ -66,15 +63,15 @@ src/
 └── utils/
 ```
 
-| Tầng         | Vai trò                           |
-| ------------ | --------------------------------- |
-| Presentation | Giao diện và tương tác người dùng |
-| Business     | Xử lý nghiệp vụ                   |
-| DAO          | Truy xuất dữ liệu                 |
-| Model        | Định nghĩa đối tượng              |
-| DTO          | Truyền dữ liệu thống kê           |
-| Exception    | Xử lý lỗi tùy chỉnh               |
-| Utils        | Tiện ích dùng chung               |
+| Tầng         | Chức năng                                        |
+| ------------ | ------------------------------------------------ |
+| Presentation | Hiển thị giao diện và nhận dữ liệu từ người dùng |
+| Business     | Xử lý nghiệp vụ và kiểm tra dữ liệu              |
+| DAO          | Thao tác với cơ sở dữ liệu                       |
+| Model        | Định nghĩa các thực thể                          |
+| DTO          | Truyền dữ liệu giữa các tầng                     |
+| Exception    | Quản lý các ngoại lệ tùy chỉnh                   |
+| Utils        | Các tiện ích hỗ trợ hệ thống                     |
 
 ---
 
@@ -112,11 +109,11 @@ Enrollments
 Courses
 ```
 
-Bảng Enrollments đóng vai trò trung gian xử lý quan hệ nhiều-nhiều giữa học viên và khóa học.
+Bảng **Enrollments** đóng vai trò trung gian xử lý quan hệ nhiều-nhiều giữa học viên và khóa học, đồng thời lưu trạng thái đăng ký.
 
 ---
 
-# 🔐 Chức năng Xác thực
+# 🔐 Chức năng xác thực
 
 ### Quản trị viên
 
@@ -131,20 +128,20 @@ Bảng Enrollments đóng vai trò trung gian xử lý quan hệ nhiều-nhiều
 
 ### Bảo mật
 
-* Mật khẩu được mã hóa bằng BCrypt
+* Mã hóa mật khẩu bằng BCrypt
 * Sử dụng PreparedStatement để hạn chế SQL Injection
 * Kiểm tra dữ liệu đầu vào trước khi xử lý
-* Sử dụng Foreign Key để đảm bảo tính toàn vẹn dữ liệu
+* Ràng buộc khóa ngoại (Foreign Key) đảm bảo tính toàn vẹn dữ liệu
 
 ---
 
-# 👨‍💼 Chức năng Quản trị viên
+# 👨‍💼 Chức năng dành cho Quản trị viên
 
 ## Quản lý khóa học
 
-* Hiển thị danh sách khóa học
+* Xem danh sách khóa học
 * Phân trang dữ liệu
-* Thêm khóa học mới
+* Thêm mới khóa học
 * Cập nhật thông tin khóa học
 * Xóa khóa học
 * Tìm kiếm khóa học theo tên
@@ -152,13 +149,13 @@ Bảng Enrollments đóng vai trò trung gian xử lý quan hệ nhiều-nhiều
 
 ## Quản lý học viên
 
-* Hiển thị danh sách học viên
+* Xem danh sách học viên
 * Phân trang dữ liệu
-* Thêm học viên
+* Thêm mới học viên
 * Cập nhật thông tin học viên
 * Xóa học viên
 * Tìm kiếm học viên
-* Sắp xếp dữ liệu học viên
+* Sắp xếp danh sách học viên
 
 ## Quản lý đăng ký học
 
@@ -167,17 +164,17 @@ Bảng Enrollments đóng vai trò trung gian xử lý quan hệ nhiều-nhiều
 * Từ chối đăng ký học
 * Xóa đăng ký học
 
-## Thống kê
+## Thống kê và báo cáo
 
 * Tổng số học viên
 * Tổng số khóa học
-* Thống kê số lượng học viên theo khóa học
+* Thống kê số lượng học viên theo từng khóa học
 * Top 5 khóa học có nhiều học viên nhất
 * Danh sách khóa học có trên 10 học viên
 
 ---
 
-# 👨‍🎓 Chức năng Học viên
+# 👨‍🎓 Chức năng dành cho Học viên
 
 ## Tra cứu khóa học
 
@@ -190,20 +187,16 @@ Bảng Enrollments đóng vai trò trung gian xử lý quan hệ nhiều-nhiều
 * Hủy đăng ký khóa học
 * Theo dõi trạng thái đăng ký
 
-### Trạng thái đăng ký
+### Luồng trạng thái đăng ký
 
 ```text
 WAITING
    ↓
 CONFIRM
 
-hoặc
-
 WAITING
    ↓
 DENIED
-
-hoặc
 
 WAITING
    ↓
@@ -216,7 +209,20 @@ CANCELED
 
 ## Gợi ý khóa học
 
-Hệ thống hỗ trợ gợi ý khóa học dựa trên lịch sử đăng ký của các học viên có hành vi học tập tương tự.
+Hệ thống hỗ trợ gợi ý khóa học dựa trên lịch sử đăng ký của các học viên có hành vi học tập tương tự, giúp người dùng dễ dàng khám phá các khóa học phù hợp.
+
+---
+
+# ⭐ Điểm nổi bật của dự án
+
+* Áp dụng mô hình phân tầng UI – Business – DAO
+* Quản lý dữ liệu bằng PostgreSQL thông qua JDBC
+* Mã hóa mật khẩu bằng BCrypt
+* Hệ thống phân trang cho các danh sách dữ liệu
+* Xử lý ngoại lệ bằng Custom Exception
+* Hỗ trợ thống kê và báo cáo dữ liệu
+* Có chức năng gợi ý khóa học cho học viên
+* Có bộ tài liệu kiểm thử và đặc tả chức năng đi kèm
 
 ---
 
@@ -230,67 +236,63 @@ Dự án được kiểm thử thủ công thông qua 5 bộ Test Report:
 * Enrollment Management
 * Statistics & Recommendation
 
-Các báo cáo kiểm thử được lưu trong thư mục:
+Các tài liệu kiểm thử được lưu tại:
 
 ```text
 testing/
 ```
 
-Mục tiêu là kiểm tra:
+Mục tiêu kiểm thử:
 
-* Tính đúng đắn của nghiệp vụ
-* Xử lý ngoại lệ
+* Kiểm tra tính đúng đắn của nghiệp vụ
 * Kiểm tra dữ liệu đầu vào
-* Luồng xử lý người dùng
+* Kiểm tra xử lý ngoại lệ
+* Kiểm tra luồng thao tác người dùng
 
 ---
 
-# ⚙ Xử lý ngoại lệ
+# 📄 Tài liệu dự án
 
-Hệ thống xây dựng các lớp Exception riêng:
+Các tài liệu phân tích, thiết kế và kiểm thử được lưu trong:
 
 ```text
-BusinessException
-DatabaseException
-ValidationException
+docs/
+testing/
 ```
 
-Giúp:
+Bao gồm:
 
-* Phân loại lỗi rõ ràng
-* Dễ bảo trì
-* Hiển thị thông báo thân thiện cho người dùng
-
----
-
-# 📌 Kết quả đạt được
-
-* Hoàn thành hệ thống quản lý học viên và khóa học bằng Java Core
-* Kết nối và thao tác dữ liệu với PostgreSQL bằng JDBC
-* Áp dụng mô hình phân tầng UI - Business - DAO
-* Triển khai cơ chế mã hóa mật khẩu BCrypt
-* Xây dựng chức năng đăng ký học và quản lý trạng thái đăng ký
-* Xây dựng hệ thống thống kê dữ liệu
-* Thực hiện kiểm thử cho các phân hệ chính
+* Đặc tả chức năng hệ thống
+* Thiết kế cơ sở dữ liệu
+* Báo cáo kiểm thử
+* Tài liệu phân tích nghiệp vụ
 
 ---
 
 # 🚀 Hướng phát triển
 
-* Áp dụng Dependency Injection để giảm phụ thuộc giữa các lớp
-* Bổ sung Unit Test bằng JUnit
-* Tối ưu mã nguồn theo nguyên tắc DRY
+* Áp dụng Dependency Injection
+* Bổ sung Unit Test với JUnit
+* Tối ưu và tái cấu trúc mã nguồn
 * Phát triển giao diện Desktop hoặc Web
-* Mở rộng chức năng báo cáo và phân tích dữ liệu
+* Mở rộng hệ thống báo cáo và phân tích dữ liệu
 
 ---
 
 ## 👨‍💻 Tác giả
 
-Nguyễn Quốc Tịnh
+### Nguyễn Quốc Tính
 
-Sinh viên Công nghệ Thông tin, yêu thích phát triển Backend và thiết kế hệ thống.
+Sinh viên Công nghệ Thông tin, quan tâm đến:
 
-Dự án được xây dựng nhằm thực hành Java Core, JDBC, PostgreSQL, OOP và kiến trúc phần mềm phân tầng trong môi trường quản lý học viên thực tế.
+* Backend Development
+* Java Ecosystem
+* Database Design
+* Software Architecture
+* Software Testing
 
 GitHub: https://github.com/quoctinh-dev
+
+---
+
+> Dự án được thực hiện nhằm thực hành Java Core, JDBC, PostgreSQL, OOP và thiết kế phần mềm theo kiến trúc phân tầng trong môi trường quản lý đào tạo thực tế.
