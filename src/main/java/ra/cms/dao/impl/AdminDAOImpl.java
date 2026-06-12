@@ -13,14 +13,18 @@ import java.util.Optional;
 
 public class AdminDAOImpl implements IAdminDao {
 
+    // TÌM KIẾM THEO TÊN CỦA ADMIN
     @Override
     public Optional<Admin> findByUsername(String username) throws DatabaseException {
+
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
+
         String sql = "SELECT id, username, password FROM Admins WHERE username = ?";
 
         try {
+
             connection = DBUtil.getConnection();
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, username);

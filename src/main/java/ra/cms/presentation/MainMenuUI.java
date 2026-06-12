@@ -43,7 +43,7 @@ public class MainMenuUI {
                     systemRunning = false;
                     break;
                 default:
-                    System.err.println("Lựa chọn không hợp lệ, vui lòng chọn lại!");
+                    System.out.println("Lựa chọn không hợp lệ, vui lòng chọn lại!");
             }
         }
     }

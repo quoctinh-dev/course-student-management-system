@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IStudentDao {
+    // HÀM findByEmail hổ trợ tìm kiếm để mà đăng nhập cho student
     Optional<Student> findByEmail(String email) throws DatabaseException;
+
     List<Student> findAll() throws DatabaseException;
     boolean existsByEmail(String email) throws DatabaseException;
     void create(Student student) throws DatabaseException;

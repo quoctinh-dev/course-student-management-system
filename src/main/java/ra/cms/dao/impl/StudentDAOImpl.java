@@ -17,6 +17,7 @@ import java.sql.*;
 
 public class StudentDAOImpl implements IStudentDao {
 
+    // THỰC THI CHỨC NĂNG TÌM KIẾM EMAIL TRẢ VỀ ĐỐI TƯỢNG
     @Override
     public Optional<Student> findByEmail(String email) throws DatabaseException {
         Connection connection = null;
@@ -57,6 +58,8 @@ public class StudentDAOImpl implements IStudentDao {
         }
         return Optional.empty();
     }
+
+
     @Override
     public List<Student> findAll() throws DatabaseException {
         List<Student> students = new ArrayList<>();

@@ -47,7 +47,9 @@ public class CourseUI {
         }
     }
 
-
+    /***
+     * CHỨC NĂNG 1: Hiển thị danh sách khóa học
+     */
     // NÂNG CAO PHÂN TRANG
     private void handleDisplayAllCoursesWithPagination() {
         int currentPage = 1;
@@ -102,6 +104,7 @@ public class CourseUI {
         }
     }
 
+    // HIỆN THỊ DANH SÁCH KHÓA HỌC KHÔNG CÓ PHẦN TRANG
     private void handleDisplayAllCourses() {
         try {
             List<Course> list = courseBusiness.getAllCourses();
@@ -111,6 +114,10 @@ public class CourseUI {
         }
 
     }
+
+    /***
+     * CHỨC NĂNG 2: Thêm mới khóa học
+     */
 
     private void handleCreateCourse() {
         System.out.println("\n================ THÊM MỚI KHÓA HỌC ================");
@@ -142,6 +149,9 @@ public class CourseUI {
         pressEnterToContinue();
     }
 
+    /***
+     * CHỨC NĂNG 3: chỉnh sủa khóa học
+     */
     private void handleUpdateCourse() {
         System.out.println("\n================ CHỈNH SỬA KHÓA HỌC ================");
         System.out.print("Nhập ID khóa học cần chỉnh sửa: ");
@@ -197,6 +207,9 @@ public class CourseUI {
         pressEnterToContinue();
     }
 
+    /***
+     * CHỨC NĂNG 4: Xóa khóa học
+     */
     private void handleDeleteCourse() {
         System.out.println("\n================ XÓA KHÓA HỌC ================");
         System.out.print("Nhập ID khóa học cần xóa: ");
@@ -227,6 +240,9 @@ public class CourseUI {
         pressEnterToContinue();
     }
 
+    /***
+     * CHỨC NĂNG 5: Tìm kiếm khóa học
+     */
     private void handleSearchCourses() {
         System.out.println("\n================ TÌM KIẾM KHÓA HỌC ================");
         System.out.print("Nhập từ khóa tên khóa học muốn tìm: ");
@@ -245,6 +261,9 @@ public class CourseUI {
         pressEnterToContinue();
     }
 
+    /***
+     * CHỨC NĂNG 6: Xắp xếp khóa học theo 4 tiêu chí
+     */
     private void handleSortCourses() {
         System.out.println("\n================ SẮP XẾP DANH SÁCH KHÓA HỌC ================");
         System.out.println("1. Sắp xếp theo ID tăng dần");
@@ -273,22 +292,31 @@ public class CourseUI {
         pressEnterToContinue();
     }
 
+    /***
+     * Các hàm tiện ích
+     */
+
+    // 1. In bảng của khóa học
     private void printCourseTable(List<Course> list) {
         if (list.isEmpty()) {
             System.out.println("\n[THÔNG BÁO] Không tìm thấy khóa học phù hợp với yêu cầu.");
             return;
         }
-        System.out.println("\n+------+---------------------------+------------+---------------------------+");
-        System.out.printf("| %-4s | %-25s | %-10s | %-25s |\n", "ID", "Tên Khóa Học", "Thời Lượng", "Giảng Viên");
-        System.out.println("+------+---------------------------+------------+---------------------------+");
+
+        System.out.println("\n+------+------------------------------------------+------------+---------------------------+");
+        System.out.printf("| %-4s | %-40s | %-10s | %-25s |\n", "ID", "Tên Khóa Học", "Thời Lượng", "Giảng Viên");
+        System.out.println("+------+------------------------------------------+------------+---------------------------+");
+
         for (Course c : list) {
-            System.out.printf("| %-4d | %-25s | %-10s | %-25s |\n",
+            System.out.printf("| %-4d | %-40s | %-10s | %-25s |\n",
                     c.getId(), c.getName(), c.getDuration() + " giờ", c.getInstructor());
         }
-        System.out.println("+------+---------------------------+------------+---------------------------+");
+        System.out.println("+------+------------------------------------------+------------+---------------------------+");
         System.out.println("Tổng cộng: " + list.size() + " kết quả.");
     }
 
+
+    // 2.Kiểm tra nhập số nguyên
     private int inputInteger() {
         try {
             return Integer.parseInt(scanner.nextLine().trim());
@@ -298,6 +326,7 @@ public class CourseUI {
         }
     }
 
+    // 3. Kiểm tra nhập số nguyên Long
     private long inputLong() {
         try {
             return Long.parseLong(scanner.nextLine().trim());
@@ -307,6 +336,7 @@ public class CourseUI {
         }
     }
 
+    // 4. Dùng để dùng màn hình
     private void pressEnterToContinue() {
         System.out.print("\nNhấn phím [Enter] để tiếp tục...");
         scanner.nextLine();

@@ -33,7 +33,7 @@ public class StudentMenuUI {
     public void showStudentMenu() {
         boolean studentLoggedIn = true;
         while (studentLoggedIn) {
-            System.out.println("\n========= MENU HỌC VIÊN =========");
+            System.out.println("\n========= I. MENU HỌC VIÊN =========");
             System.out.println("1. Xem danh sách khóa học");
             System.out.println("2. Đăng ký khóa học");
             System.out.println("3. Xem khóa học đã đăng ký");

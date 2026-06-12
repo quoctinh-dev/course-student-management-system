@@ -38,6 +38,7 @@ public class AdminLoginUI {
             } else {
                 System.err.println("Đăng nhập thất bại: Sai tài khoản hoặc mật khẩu!");
             }
+
         } catch (ValidationException e) {
             System.err.println("Cảnh báo nhập liệu: " + e.getMessage());
         } catch (DatabaseException e) {

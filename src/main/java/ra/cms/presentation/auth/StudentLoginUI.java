@@ -42,9 +42,11 @@ public class StudentLoginUI {
 
                 StudentMenuUI studentMenuUI = new StudentMenuUI(studentBusiness, enrollmentBusiness, courseBusiness, scanner, student);
                 studentMenuUI.showStudentMenu();
+
             } else {
                 System.err.println("Đăng nhập thất bại: Sai tài khoản email hoặc mật khẩu Học viên!");
             }
+
         } catch (ValidationException e) {
             System.err.println("Cảnh báo nhập liệu: " + e.getMessage());
         } catch (DatabaseException e) {

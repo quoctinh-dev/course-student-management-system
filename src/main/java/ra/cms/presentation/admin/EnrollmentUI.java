@@ -42,6 +42,9 @@ public class EnrollmentUI {
         }
     }
 
+    /***
+     * CHỨC NĂNG 1: HIỆN THỊ DANH SÁCH HỌC VIÊN THEO KHÓA HỌC
+     */
     private void handleViewStudentsByCourse() {
         System.out.println("\n============== DANH SÁCH SINH VIÊN ĐĂNG KÝ THEO KHÓA HỌC ==============");
         System.out.print("Nhập Mã số (ID) khóa học cần kiểm tra: ");
@@ -88,6 +91,7 @@ public class EnrollmentUI {
         }
     }
 
+    // DANH SÁCH HỌC VIÊN CÓ PHÂN TRANG
     private void handleViewStudentsByCourseWithPagination() {
         System.out.println("\n============== DANH SÁCH SINH VIÊN ĐĂNG KÝ THEO KHÓA HỌC (PHÂN TRANG) ==============");
         System.out.print("Nhập Mã số (ID) khóa học cần kiểm tra: ");
@@ -167,6 +171,10 @@ public class EnrollmentUI {
         pressEnterToContinue();
     }
 
+
+    /***
+     * CHỨC NĂNG 2: DUYỆT SINH VIÊN ĐĂNG KÝ KHÓA HỌC
+     */
     private void handleApproveEnrollment() {
         System.out.println("\n============== PHÊ DUYỆT ĐƠN ĐĂNG KÝ KHÓA HỌC ==============");
         System.out.print("Nhập Mã số đơn đăng ký (Mã Đơn) bạn muốn xử lý: ");
@@ -210,6 +218,9 @@ public class EnrollmentUI {
         }
     }
 
+    /***
+     * CHỨC NĂNG 4: XÓA SINH VIÊN KHỎI KHÓA HỌC
+     */
     private void handleRemoveStudentFromCourse() {
         System.out.println("\n============== XÓA SINH VIÊN KHỎI KHÓA HỌC ==============");
         System.out.print("Nhập Mã số đơn đăng ký (Mã Đơn) muốn tiến hành xóa: ");
@@ -242,6 +253,9 @@ public class EnrollmentUI {
         }
     }
 
+    /***
+     * HÀM TIỆN ÍCH
+     */
     private void pressEnterToContinue() {
         System.out.print("\n Bấm phím [Enter] để quay lại Menu...");
         scanner.nextLine();

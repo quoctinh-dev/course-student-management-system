@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IStudentBusiness {
+    // CHỨC NĂNG DÀNH CHO ĐĂNG NHẬP CỦA STUDENT
     Optional<Student> login(String email, String password) throws ValidationException, DatabaseException;
     List<Student> findAll() throws DatabaseException;
     void createStudent(Student student) throws ValidationException, BusinessException, DatabaseException;

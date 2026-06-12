@@ -8,5 +8,6 @@
     import java.util.Optional;
 
     public interface IAdminDao  {
+        // HÀM TÌM KIẾM TÊN CỦA ADMIN
         Optional<Admin> findByUsername(String username) throws DatabaseException;
     }

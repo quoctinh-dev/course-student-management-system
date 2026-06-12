@@ -17,6 +17,7 @@ public class StudentBusinessImpl implements IStudentBusiness {
 
     private final IStudentDao studentDao = new StudentDAOImpl();
 
+    // CHỨC NĂNG DÀNH CHO ĐĂNG NHẬP CỦA STUDENT
     @Override
     public Optional<Student> login(String email, String password) throws ValidationException, DatabaseException {
         if (email == null || email.isBlank()) {
